@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://crref5xoh7hvq"]
+
+[ext_resource type="Texture2D" uid="uid://sh50vmesk7j2" path="res://icon.svg" id="1_nqyg2"]
+[ext_resource type="PackedScene" uid="uid://jpwjpncwcxpk" path="res://bird/bird.tscn" id="1_s2w0r"]
+[ext_resource type="PackedScene" uid="uid://cx71kvitavgo5" path="res://pipe/pipe_pair.tscn" id="3_5ml24"]
+[ext_resource type="Script" path="res://pipe/pipe_spawner.gd" id="4_a0u8s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hedf7"]
+size = Vector2(128, 128)
+
+[node name="MainGameLevel" type="Node2D"]
+
+[node name="Bird" parent="." instance=ExtResource("1_s2w0r")]
+position = Vector2(594, 262)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(601, 583)
+scale = Vector2(9.48, 1)
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Ground"]
+texture = ExtResource("1_nqyg2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_hedf7")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="PipePair" parent="." instance=ExtResource("3_5ml24")]
+position = Vector2(1104, 256)
+
+[node name="Pipes" type="Node" parent="."]
+script = ExtResource("4_a0u8s")
+
+[node name="PipeSpawnTimer" type="Timer" parent="Pipes"]
+wait_time = 4.0
+autostart = true
+
+[node name="SpawnPosition" type="Marker2D" parent="Pipes"]
+position = Vector2(1300, 300)
+
+[connection signal="timeout" from="Pipes/PipeSpawnTimer" to="Pipes" method="_on_pipe_spawn_timer_timeout"]

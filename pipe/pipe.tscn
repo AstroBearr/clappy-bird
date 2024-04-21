@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2s6rcyund00o"]
+
+[ext_resource type="Texture2D" uid="uid://sh50vmesk7j2" path="res://icon.svg" id="1_muyni"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hedf7"]
+size = Vector2(128, 128)
+
+[node name="Pipe" type="StaticBody2D"]
+scale = Vector2(0.5, 5)
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_muyni")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_hedf7")
