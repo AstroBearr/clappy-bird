@@ -1,0 +1,97 @@
+[gd_scene load_steps=7 format=3 uid="uid://4v3a0npqbado"]
+
+[ext_resource type="Script" path="res://ui/death_flash.gd" id="1_d1hqj"]
+[ext_resource type="Texture2D" uid="uid://dopjprcxp13jk" path="res://ui/pause.png" id="2_t8okp"]
+[ext_resource type="FontFile" uid="uid://cchsk7vy6thv" path="res://ui/PointsFont.ttf" id="2_wqx8u"]
+
+[sub_resource type="Animation" id="Animation_rgnpt"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_s7w7f"]
+resource_name = "flash"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y2ojc"]
+_data = {
+"RESET": SubResource("Animation_rgnpt"),
+"flash": SubResource("Animation_s7w7f")
+}
+
+[node name="GameplayUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DeathFlash" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+script = ExtResource("1_d1hqj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DeathFlash"]
+libraries = {
+"": SubResource("AnimationLibrary_y2ojc")
+}
+
+[node name="Points" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.448
+anchor_top = 0.0462963
+anchor_right = 0.552
+anchor_bottom = 0.231296
+offset_left = -0.160034
+offset_right = 0.159912
+offset_bottom = 0.199997
+theme_override_fonts/font = ExtResource("2_wqx8u")
+theme_override_font_sizes/font_size = 100
+text = "12"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pause" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.026
+anchor_top = 0.046
+anchor_right = 0.13
+anchor_bottom = 0.231
+offset_left = 0.079998
+offset_top = 0.319996
+offset_right = 0.399979
+offset_bottom = 0.519989
+texture_normal = ExtResource("2_t8okp")
+stretch_mode = 5

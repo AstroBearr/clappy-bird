@@ -1,18 +1,59 @@
-[gd_scene load_steps=4 format=3 uid="uid://jpwjpncwcxpk"]
+[gd_scene load_steps=7 format=3 uid="uid://jpwjpncwcxpk"]
 
-[ext_resource type="Texture2D" uid="uid://sh50vmesk7j2" path="res://icon.svg" id="1_3gfvd"]
 [ext_resource type="Script" path="res://bird/birdcontroller.gd" id="1_p3nyf"]
+[ext_resource type="Texture2D" uid="uid://md41upld8euh" path="res://bird/bird.png" id="2_rdmjw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_076ac"]
 radius = 60.208
 
+[sub_resource type="Animation" id="Animation_o2a3c"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_6fe0r"]
+resource_name = "bird_fly"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2a88a"]
+_data = {
+"RESET": SubResource("Animation_o2a3c"),
+"bird_fly": SubResource("Animation_6fe0r")
+}
+
 [node name="Bird" type="RigidBody2D"]
+max_contacts_reported = 1
+contact_monitor = true
 script = ExtResource("1_p3nyf")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_3gfvd")
+scale = Vector2(4, 4)
+texture = ExtResource("2_rdmjw")
+hframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.5, 0.5)
@@ -21,5 +62,11 @@ shape = SubResource("CircleShape2D_076ac")
 [node name="JumpTimer" type="Timer" parent="."]
 wait_time = 0.4
 one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_2a88a")
+}
+autoplay = "bird_fly"
 
 [connection signal="timeout" from="JumpTimer" to="." method="_on_jump_timer_timeout"]

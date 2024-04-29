@@ -1,43 +1,108 @@
-[gd_scene load_steps=6 format=3 uid="uid://crref5xoh7hvq"]
+[gd_scene load_steps=13 format=3 uid="uid://crref5xoh7hvq"]
 
-[ext_resource type="Texture2D" uid="uid://sh50vmesk7j2" path="res://icon.svg" id="1_nqyg2"]
+[ext_resource type="Script" path="res://game_manager.gd" id="1_qjrv0"]
 [ext_resource type="PackedScene" uid="uid://jpwjpncwcxpk" path="res://bird/bird.tscn" id="1_s2w0r"]
-[ext_resource type="PackedScene" uid="uid://cx71kvitavgo5" path="res://pipe/pipe_pair.tscn" id="3_5ml24"]
+[ext_resource type="Script" path="res://camera_window/camera_screen_size.gd" id="3_t5ee2"]
 [ext_resource type="Script" path="res://pipe/pipe_spawner.gd" id="4_a0u8s"]
+[ext_resource type="Shader" path="res://gameplay_sprites/texture_scroll_sprite.gdshader" id="4_o2ap5"]
+[ext_resource type="Texture2D" uid="uid://dnvo260hnxktn" path="res://gameplay_sprites/ground.png" id="4_welcv"]
+[ext_resource type="PackedScene" uid="uid://x7gcfr6jpmuw" path="res://backgrounds/background.tscn" id="6_fcup7"]
+[ext_resource type="Script" path="res://gameplay_sprites/grounds.gd" id="6_nwxup"]
+[ext_resource type="PackedScene" uid="uid://4v3a0npqbado" path="res://ui/gameplay_ui.tscn" id="9_jos6d"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ymtfb"]
+shader = ExtResource("4_o2ap5")
+shader_parameter/time = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hedf7"]
-size = Vector2(128, 128)
+size = Vector2(168, 56)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ms0sf"]
+shader = ExtResource("4_o2ap5")
+shader_parameter/time = 0.0
 
 [node name="MainGameLevel" type="Node2D"]
+script = ExtResource("1_qjrv0")
 
 [node name="Bird" parent="." instance=ExtResource("1_s2w0r")]
-position = Vector2(594, 262)
-
-[node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(601, 583)
-scale = Vector2(9.48, 1)
-metadata/_edit_group_ = true
-
-[node name="Sprite2D" type="Sprite2D" parent="Ground"]
-texture = ExtResource("1_nqyg2")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
-shape = SubResource("RectangleShape2D_hedf7")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(576, 324)
-
-[node name="PipePair" parent="." instance=ExtResource("3_5ml24")]
-position = Vector2(1104, 256)
+z_index = 5
+position = Vector2(960, 540)
 
 [node name="Pipes" type="Node" parent="."]
 script = ExtResource("4_a0u8s")
 
 [node name="PipeSpawnTimer" type="Timer" parent="Pipes"]
-wait_time = 4.0
+wait_time = 2.0
 autostart = true
 
 [node name="SpawnPosition" type="Marker2D" parent="Pipes"]
-position = Vector2(1300, 300)
+position = Vector2(2060, 540)
 
+[node name="MainCamera" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+script = ExtResource("3_t5ee2")
+
+[node name="Backgrounds" type="Node" parent="."]
+
+[node name="BackgroundRight" parent="Backgrounds" instance=ExtResource("6_fcup7")]
+position = Vector2(1680, 540)
+
+[node name="BackgroundLeft" parent="Backgrounds" instance=ExtResource("6_fcup7")]
+position = Vector2(240, 540)
+
+[node name="Background" parent="Backgrounds" instance=ExtResource("6_fcup7")]
+position = Vector2(960, 540)
+
+[node name="Grounds" type="Node2D" parent="."]
+script = ExtResource("6_nwxup")
+
+[node name="Ground" type="StaticBody2D" parent="Grounds"]
+position = Vector2(960, 1009)
+scale = Vector2(4, 4)
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Ground"]
+z_index = 4
+texture_repeat = 2
+material = SubResource("ShaderMaterial_ymtfb")
+texture = ExtResource("4_welcv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Ground"]
+shape = SubResource("RectangleShape2D_hedf7")
+
+[node name="Ground2" type="StaticBody2D" parent="Grounds"]
+texture_repeat = 1
+position = Vector2(1632, 1009)
+scale = Vector2(4, 4)
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Ground2"]
+z_index = 4
+texture_repeat = 2
+material = SubResource("ShaderMaterial_ms0sf")
+texture = ExtResource("4_welcv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Ground2"]
+shape = SubResource("RectangleShape2D_hedf7")
+
+[node name="Ground3" type="StaticBody2D" parent="Grounds"]
+position = Vector2(288, 1009)
+scale = Vector2(4, 4)
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Ground3"]
+z_index = 4
+texture_repeat = 2
+material = SubResource("ShaderMaterial_ms0sf")
+texture = ExtResource("4_welcv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Ground3"]
+shape = SubResource("RectangleShape2D_hedf7")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameplayUi" parent="CanvasLayer" instance=ExtResource("9_jos6d")]
+
+[connection signal="body_entered" from="Bird" to="." method="initiate_death"]
+[connection signal="body_entered" from="Bird" to="." method="_on_bird_body_entered"]
 [connection signal="timeout" from="Pipes/PipeSpawnTimer" to="Pipes" method="_on_pipe_spawn_timer_timeout"]
